@@ -43,21 +43,23 @@ class Item extends StatelessWidget {
                         child: InkWell(
                           onTap: () {
 
-                            Fluttertoast.showToast(
-                                msg: "Nothing implemented here yet",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0
+                            Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) => ItemReviewPage(
+                                      tags: this.tags,
+                                      picture: this.picture,
+                                      price: this.price,
+                                      isActive: this.isActive,
+                                      status: this.status,
+                                      id: this.id,
+                                      company: this.company,
+                                      buyer: this.buyer,
+                                      registered: this.registered,
+                                    ),)
+
                             );
                           },
-                          //     Navigator.of(context).push(
-                          //     MaterialPageRoute(
-                          //         builder: (_) => ItemReviewsPage())
-                          //
-                          // ),
+
                           child: Padding(
                             padding: EdgeInsets.all(24.0),
                             child: Column(

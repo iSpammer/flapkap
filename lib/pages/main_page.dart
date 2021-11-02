@@ -25,7 +25,6 @@ class _MainPageState extends State<MainPage> {
     return DefaultAssetBundle.of(context).loadString("assets/orders.json");
   }
 
-
   static final List<String> chartDropdownItems = [
     'Last 7 days',
     'Last month',
@@ -69,12 +68,22 @@ class _MainPageState extends State<MainPage> {
             if (snapshot.hasData &&
                 snapshot.connectionState == ConnectionState.done) {
               var dataStr = snapshot.data;
-              double avg_price = 0;
+              double avgPrice = 0;
               double sum = 0;
               int isActive = 0;
+              int returns = 0;
+              int delivered = 0;
+              int ordered = 0;
               List<Api> datas = List<Api>.from(
                   json.decode(dataStr!).map((x) => Api.fromJson(x)));
               datas.forEach((element) {
+                if (element.status == Status.RETURNED) {
+                  returns += 1;
+                } else if (element.status == Status.DELIVERED) {
+                  delivered += 1;
+                } else {
+                  ordered += 1;
+                }
                 String curr = (element.price.replaceAll(RegExp(','), ''));
                 curr = (curr.replaceAll(RegExp("[\$,]"), ''));
                 sum += double.parse(curr.replaceAll(RegExp('\$'), ''));
@@ -82,7 +91,7 @@ class _MainPageState extends State<MainPage> {
                   isActive += 1;
                 }
               });
-              avg_price = sum / datas.length;
+              avgPrice = sum / datas.length;
               return StaggeredGridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.0,
@@ -92,39 +101,69 @@ class _MainPageState extends State<MainPage> {
                   _buildTile(
                     Padding(
                       padding: const EdgeInsets.all(24.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text('Total Purchases',
-                                    style: TextStyle(color: Colors.blueAccent)),
-                                Text('${datas.length} Purchases',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 34.0))
-                              ],
-                            ),
-                            Material(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(24.0),
-                                child: Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.timeline,
-                                      color: Colors.white, size: 30.0),
-                                )))
-                          ]),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text('Total Purchases',
+                                        style: TextStyle(
+                                            color: Colors.blueAccent)),
+                                    Text('${datas.length} Purchases',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 34.0))
+                                  ],
+                                ),
+                                Material(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(24.0),
+                                    child: Center(
+                                        child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Icon(Icons.timeline,
+                                          color: Colors.white, size: 30.0),
+                                    )))
+                              ]),
+                          SizedBox(height: 15,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("$ordered Orders are being processed"),
+                              Icon(Icons.shopping_cart),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("$delivered Orders delivered to customers successfully"),
+                              Icon(Icons.delivery_dining),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("$returns Orders returned to warehouse"),
+                              Icon(Icons.keyboard_return),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => ShopItemsPage(datas,))),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => ShopItemsPage(
+                              datas,
+                            ))),
                   ),
-
-
                   _buildTile(
                     Padding(
                       padding: const EdgeInsets.all(24.0),
@@ -185,7 +224,6 @@ class _MainPageState extends State<MainPage> {
                     ),
                     onTap: () {
                       showToast();
-
                     },
                   ),
                   _buildTile(
@@ -220,7 +258,10 @@ class _MainPageState extends State<MainPage> {
                                     color: Colors.transparent),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      right: 18.0, left: 12.0, top: 24, bottom: 12),
+                                      right: 18.0,
+                                      left: 12.0,
+                                      top: 24,
+                                      bottom: 12),
                                   child: LineChart(
                                     showAvg ? avgData() : mainData(),
                                   ),
@@ -240,8 +281,9 @@ class _MainPageState extends State<MainPage> {
                                   'avg',
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color:
-                                      showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
+                                      color: showAvg
+                                          ? Colors.white.withOpacity(0.5)
+                                          : Colors.white),
                                 ),
                               ),
                             ),
@@ -251,7 +293,6 @@ class _MainPageState extends State<MainPage> {
                     ),
                     onTap: () {
                       showToast();
-
                     },
                   ),
                   _buildTile(
@@ -266,8 +307,9 @@ class _MainPageState extends State<MainPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text('Average Purchases Price',
-                                    style: TextStyle(color: Colors.deepPurpleAccent)),
-                                Text('${avg_price.toStringAsFixed(3)} \$',
+                                    style: TextStyle(
+                                        color: Colors.deepPurpleAccent)),
+                                Text('${avgPrice.toStringAsFixed(3)} \$',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w700,
@@ -279,15 +321,14 @@ class _MainPageState extends State<MainPage> {
                                 borderRadius: BorderRadius.circular(24.0),
                                 child: Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Icon(Icons.money,
-                                          color: Colors.white, size: 30.0),
-                                    )))
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Icon(Icons.money,
+                                      color: Colors.white, size: 30.0),
+                                )))
                           ]),
                     ),
                     onTap: () {
                       showToast();
-
                     },
                   ),
                   _buildTile(
@@ -321,12 +362,14 @@ class _MainPageState extends State<MainPage> {
                                 )))
                           ]),
                     ),
-                    onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => ShopItemsPage(datas,))),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => ShopItemsPage(
+                              datas,
+                            ))),
                   )
                 ],
                 staggeredTiles: [
-                  StaggeredTile.extent(2, 110.0),
+                  StaggeredTile.extent(2, 210.0),
                   StaggeredTile.extent(1, 180.0),
                   StaggeredTile.extent(1, 180.0),
                   StaggeredTile.extent(2, 350.0),
@@ -350,7 +393,7 @@ class _MainPageState extends State<MainPage> {
         ));
   }
 
-  showToast(){
+  showToast() {
     Fluttertoast.showToast(
         msg: "Nothing implemented here yet, click 'total purchases'",
         toastLength: Toast.LENGTH_SHORT,
@@ -358,10 +401,9 @@ class _MainPageState extends State<MainPage> {
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
-
+        fontSize: 16.0);
   }
+
   Widget _buildTile(Widget child, {required Function() onTap}) {
     return Material(
         elevation: 14.0,
@@ -471,7 +513,7 @@ class _MainPageState extends State<MainPage> {
           belowBarData: BarAreaData(
             show: true,
             colors:
-            gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                gradientColors.map((color) => color.withOpacity(0.3)).toList(),
           ),
         ),
       ],

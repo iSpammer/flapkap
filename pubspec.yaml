@@ -31,6 +31,8 @@ dependencies:
   flutter_staggered_grid_view:
   fl_chart:
   fluttertoast:
+  bottom_navy_bar:
+  lazy_load_scrollview:
 
 dev_dependencies:
   flutter_test:
