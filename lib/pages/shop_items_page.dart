@@ -85,13 +85,13 @@ class _ShopItemsPageState extends State<ShopItemsPage> {
           BottomNavyBarItem(
             icon: Icon(Icons.shopping_cart),
             title: Text('Ordered'),
-            activeColor: Colors.red,
+            activeColor: Colors.blue,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
             icon: Icon(Icons.delivery_dining),
             title: Text('Delivered'),
-            activeColor: Colors.purpleAccent,
+            activeColor: Colors.green,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
@@ -99,7 +99,7 @@ class _ShopItemsPageState extends State<ShopItemsPage> {
             title: Text(
               'Returned',
             ),
-            activeColor: Colors.pink,
+            activeColor: Colors.red,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
@@ -136,7 +136,7 @@ class _PurchasedBodyState extends State<PurchasedBody> {
   @override
   void initState() {
     super.initState();
-    items.addAll(widget.widget.data.getRange(0, 10).toList());
+    items.addAll(widget.widget.data.getRange(0, 20).toList());
 
     controller = new ScrollController()..addListener(_scrollListener);
   }
