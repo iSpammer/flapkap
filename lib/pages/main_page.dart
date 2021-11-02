@@ -352,7 +352,7 @@ class _MainPageState extends State<MainPage> {
 
   showToast(){
     Fluttertoast.showToast(
-        msg: "This is Center Short Toast",
+        msg: "Nothing implemented here yet, click 'total purchases'",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

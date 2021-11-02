@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flap_kap/classes/api.dart';
 import 'package:flap_kap/pages/item_reviews_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class Item extends StatelessWidget {
@@ -40,7 +41,18 @@ class Item extends StatelessWidget {
                         shadowColor: Color(0x802196F3),
                         color: Colors.white,
                         child: InkWell(
-                          onTap: () => print("meaw"),
+                          onTap: () {
+
+                            Fluttertoast.showToast(
+                                msg: "Nothing implemented here yet",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0
+                            );
+                          },
                           //     Navigator.of(context).push(
                           //     MaterialPageRoute(
                           //         builder: (_) => ItemReviewsPage())
